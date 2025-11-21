@@ -16,13 +16,16 @@ float ball_velocity = 0;
 
 void ball_init() {
     ball = &obj_buffer[0];   // first slot
-    memcpy(pal_obj_mem, game_ballPal, game_ballPalLen);
+
+    // 4BPP uses only half of pal_obj_mem (16 colors)
+    memcpy(&pal_obj_mem[0], game_ballPal, 32);
     memcpy(&tile_mem_obj[0][0], game_ballTiles, game_ballTilesLen);
 
     obj_set_attr(ball,
-        ATTR0_SQUARE | ATTR0_8BPP | (ball_Y & 0xFF),
+        ATTR0_SQUARE | ATTR0_4BPP | (ball_Y & 0xFF),   // Changed 8BPP -> 4BPP
         ATTR1_SIZE_8 | (BALL_X & 0x1FF),
-        0);
+        ATTR2_BUILD(0, 0, 0)
+    );
 }
 
 void ball_update(bool press_jump) {
@@ -46,50 +49,15 @@ void ball_update(bool press_jump) {
     ball->attr0 = (ball->attr0 & ~0xFF) | (ball_Y & 0xFF);
 }
 
+void reset_ball(){
+    ball_Y = 80;
+    ball_velocity = 0;
+    ball->attr0 = (ball->attr0 & ~0xFF) | (ball_Y & 0xFF);
+    
+}
 
 
-// #include <tonc.h>
-// #include "ball.h"
-// #include "../graphics/ball.h"
 
 
-// #define BALL_X 50
-// #define GRAVITY 1
-// #define JUMP_VELOCITY -7
 
-// OBJ_ATTR *ball;
-// int ball_Y = 80;
-// float ball_velocity = 0;
 
-// int main() {
-//     void ball_init() {
-//         ball = &obj_buffer[0];
-//         memcpy(pal_obj_mem, ballPal, ballPalLen);
-//         memcpy(&tile_mem_obj[0][0], ballTiles, ballTilesLen);
-
-//         obj_set_attr(ball,
-//             ATTR0_SQUARE | ATTR0_8BPP | (ball_Y & 0xFF),
-//             ATTR1_SIZE_8 | (BALL_X & 0x1FF),
-//             0);
-//     }
-
-//     void ball_update(bool press_jump) {
-//         if(press_jump){
-//             ball_velocity = JUMP_VELOCITY;
-//         }
-
-//         if(ball_Y + ball_velocity <= 25){
-//             ball_Y = 25;
-//             ball_velocity = 0;
-//         }
-
-//         if(ball_Y + ball_velocity >= 151){
-//             ball_Y = 232;
-//             ball_velocity = 0;
-//         }
-
-//         ball_velocity += GRAVITY;
-//         ball_Y += ball_velocity;
-//         bird->attr0 = (bird->attr0 & ~0xFF) | (bird_Y & 0xFF);
-//     }
-// }

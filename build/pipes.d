@@ -1,5 +1,5 @@
-main.o: \
- C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/source/main.c \
+pipes.o: \
+ C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/source/pipes.c \
  C:/devkitPRO/libtonc/include/tonc.h \
  C:/devkitPRO/libtonc/include/tonc_types.h \
  C:/devkitPRO/libtonc/include/tonc_memmap.h \
@@ -15,9 +15,11 @@ main.o: \
  C:/devkitPRO/libtonc/include/tonc_video.h \
  C:/devkitPRO/libtonc/include/tonc_nocash.h \
  C:/devkitPRO/libtonc/include/tonc_text.h \
- C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/source/ball.h \
  C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/source/pipes.h \
- C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_background_ver2.h
+ C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_topright.h \
+ C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_topleft.h \
+ C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_bottomright.h \
+ C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_bottomleft.h
 C:/devkitPRO/libtonc/include/tonc.h:
 C:/devkitPRO/libtonc/include/tonc_types.h:
 C:/devkitPRO/libtonc/include/tonc_memmap.h:
@@ -33,6 +35,8 @@ C:/devkitPRO/libtonc/include/tonc_surface.h:
 C:/devkitPRO/libtonc/include/tonc_video.h:
 C:/devkitPRO/libtonc/include/tonc_nocash.h:
 C:/devkitPRO/libtonc/include/tonc_text.h:
-C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/source/ball.h:
 C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/source/pipes.h:
-C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_background_ver2.h:
+C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_topright.h:
+C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_topleft.h:
+C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_bottomright.h:
+C:/CODING_FILE/Vscode/3rdYear-1stSem/cmsc_sp/flappy-byte/graphics/game_pipes_bottomleft.h:

@@ -1,30 +1,30 @@
 
-//{{BLOCK(game_ball)
+//{{BLOCK(game_pipes_topright)
 
 //======================================================================
 //
-//	game_ball, 8x8@4, 
+//	game_pipes_topright, 8x8@4, 
 //	Transparent palette entry: 16.
 //	+ palette 256 entries, not compressed
 //	+ 1 tiles not compressed
 //	Total size: 512 + 32 = 544
 //
-//	Time-stamp: 2025-11-19, 20:08:41
+//	Time-stamp: 2025-11-20, 01:50:20
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //
 //======================================================================
 
-const unsigned int game_ballTiles[8] __attribute__((aligned(4))) __attribute__((visibility("hidden")))=
+const unsigned int game_pipes_toprightTiles[8] __attribute__((aligned(4))) __attribute__((visibility("hidden")))=
 {
-	0x00012000,0x02111120,0x01122210,0x12222121,0x12122221,0x01222110,0x02111120,0x00021000,
+	0x00111111,0x00111111,0x00111111,0x00111111,0x00111111,0x00111111,0x00111111,0x00111111,
 };
 
-const unsigned short game_ballPal[256] __attribute__((aligned(4))) __attribute__((visibility("hidden")))=
+const unsigned short game_pipes_toprightPal[256] __attribute__((aligned(4))) __attribute__((visibility("hidden")))=
 {
-	0x0000,0x073F,0x2F7F,0x0000,0x0000,0x0000,0x0000,0x0000,
+	0x0000,0x1B26,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
-	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+	0x1224,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
@@ -59,4 +59,4 @@ const unsigned short game_ballPal[256] __attribute__((aligned(4))) __attribute__
 	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 };
 
-//}}BLOCK(game_ball)
+//}}BLOCK(game_pipes_topright)
