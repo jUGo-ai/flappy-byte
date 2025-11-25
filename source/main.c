@@ -1,6 +1,8 @@
 #include <tonc.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 #include "ball.h"
 #include "pipes.h"
 #include "../graphics/game_background_ver2.h"
@@ -11,6 +13,7 @@ int main(void) {
     // ------------------------------
     // Display & background setup
     // ------------------------------
+    srand(time(NULL));
     REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_OBJ | DCNT_OBJ_1D;
 
     memcpy(pal_bg_mem, game_background_ver2Pal, game_background_ver2PalLen);
@@ -36,24 +39,19 @@ int main(void) {
     int game_frame_counter = 0;
     int game_second_counter = 0;
 
-    // ------------------------------
-    // Main loop
-    // ------------------------------
     while(1) {
         vid_vsync();
         key_poll();
         game_frame_counter++;
 
         if (!game_started) {
-            // Wait until the player presses A for the first time
             if (key_hit(KEY_A)) {
                 game_started = true;
                 key_press = true;
             }
 
-            // Ball is idle (not falling yet)
             oam_copy(oam_mem, obj_buffer, 128);
-            continue;   // skip the rest until the game starts
+            continue;   
         }
 
         // Game started — normal update

@@ -4,12 +4,11 @@
 //======================================================================
 //
 //	game_pipes_topleft, 8x8@4, 
-//	Transparent palette entry: 16.
 //	+ palette 256 entries, not compressed
 //	+ 1 tiles not compressed
 //	Total size: 512 + 32 = 544
 //
-//	Time-stamp: 2025-11-20, 01:50:14
+//	Time-stamp: 2025-11-25, 21:13:39
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "pipes.h"
+#include <time.h>
 #include "../graphics/game_pipes_topright.h"
 #include "../graphics/game_pipes_topleft.h"
 #include "../graphics/game_pipes_bottomright.h"
@@ -29,45 +30,46 @@ static OBJ_ATTR *pipe_br[NUM_PIPES];
 static int pipe_posY[NUM_PIPES] = {23, 23, 23, 23};
 
 
-static void set_single_piece(OBJ_ATTR *o, int x, int y, u16 palbank, u16 charblock, u16 tile_index)
+static void set_single_piece(OBJ_ATTR *o, int x, int y, u16 palbank, u16 tile_index)
 {
     // ATTR0_SQUARE | ATTR0_4BPP: 8x8, 4bpp
     // ATTR1_SIZE_8: size 8x8
-    // ATTR2_BUILD(tile_index, palbank, charblock): correct tile + palette + charblock
-    // ATTR2_PRIO(1): render above background
+    // ATTR2_BUILD(tile_index, palbank, 0): Use tile_index in OBJ charblock 0 (default), with specified palbank and prio 0
+    // Removed invalid 'charblock' param—OBJ only uses charblock 4 (index 0 in tonc).
     obj_set_attr(o,
         ATTR0_SQUARE | ATTR0_4BPP | (y & 0xFF),
         ATTR1_SIZE_8 | (x & 0x1FF),
-        ATTR2_BUILD(0, palbank, charblock) | ATTR2_PRIO(0)
+        ATTR2_BUILD(tile_index, palbank, 0) | ATTR2_PRIO(0)
     );
 }
 
 
 static void set_pipe_sprites_for_pipe(int i, int posX, int posY)
 {
-    // Each corner uses its own tile index in charblock 1
-    set_single_piece(pipe_tl[i], posX, posY, 1, 1, 0); // topleft
-    set_single_piece(pipe_tr[i], posX+8, posY, 2, 1, 1); // topright
-    set_single_piece(pipe_bl[i], posX, posY+8, 3, 1, 2); // bottomleft
-    set_single_piece(pipe_br[i], posX+8, posY+8, 4, 1, 3); // bottomright
+    // Each corner uses its own tile index in charblock 0 (starting from 1 to avoid ball's tile at 0)
+    set_single_piece(pipe_tl[i], posX, posY, 1, 1); // topleft -> tile 1
+    set_single_piece(pipe_tr[i], posX+8, posY, 2, 2); // topright -> tile 2
+    set_single_piece(pipe_bl[i], posX, posY+8, 3, 3); // bottomleft -> tile 3
+    set_single_piece(pipe_br[i], posX+8, posY+8, 4, 4); // bottomright -> tile 4
 }
 
 // --- public API --------------------------------------------------------------
 void pipes_init()
 {
-    // load palettes into OBJ palette memory (use pal banks 1..4)
+    // load palettes into OBJ palette memory (use pal banks 1..4) — this is already correct
     memcpy(&pal_obj_mem[16], game_pipes_topleftPal, 32);      // palbank 1
     memcpy(&pal_obj_mem[32], game_pipes_toprightPal, 32);    // palbank 2
     memcpy(&pal_obj_mem[48], game_pipes_bottomleftPal, 32);// palbank 3
     memcpy(&pal_obj_mem[64], game_pipes_bottomrightPal, 32);// palbank 4
 
-    // load tiles into OBJ VRAM (charblocks 1..4)
-    memcpy(&tile_mem_obj[1][0], game_pipes_topleftTiles, game_pipes_topleftTilesLen);      // 32 bytes
-    memcpy(&tile_mem_obj[1][1], game_pipes_toprightTiles, game_pipes_toprightTilesLen);    // next tile
-    memcpy(&tile_mem_obj[1][2], game_pipes_bottomleftTiles, game_pipes_bottomleftTilesLen);
-    memcpy(&tile_mem_obj[1][3], game_pipes_bottomrightTiles, game_pipes_bottomrightTilesLen);
+    // load tiles into OBJ VRAM (charblock 0, starting from tile 1 to avoid ball's tile at 0)
+    // Changed from tile_mem_obj[1][n] to [0][n] — [1] is BG VRAM, not OBJ!
+    memcpy(&tile_mem_obj[0][1], game_pipes_topleftTiles, game_pipes_topleftTilesLen);      // tile 1
+    memcpy(&tile_mem_obj[0][2], game_pipes_toprightTiles, game_pipes_toprightTilesLen);    // tile 2
+    memcpy(&tile_mem_obj[0][3], game_pipes_bottomleftTiles, game_pipes_bottomleftTilesLen); // tile 3
+    memcpy(&tile_mem_obj[0][4], game_pipes_bottomrightTiles, game_pipes_bottomrightTilesLen); // tile 4
 
-    // assign obj_buffer slots (1..16 used for pipe pieces)
+    // assign obj_buffer slots (1..16 used for pipe pieces) — unchanged
     // Pipe 0 uses slots 1..4, Pipe 1 uses 5..8, Pipe 2 uses 9..12, Pipe 3 uses 13..16
     for(int i = 0; i < NUM_PIPES; i++)
     {
@@ -77,6 +79,11 @@ void pipes_init()
         pipe_bl[i] = &obj_buffer[base + 2];
         pipe_br[i] = &obj_buffer[base + 3];
     }
+    
+    random_pipes();  
+    pipes_posX = RESET_X;
+    for(int i = 0; i < NUM_PIPES; i++)
+        set_pipe_sprites_for_pipe(i, pipes_posX, pipe_posY[i]);
 
     // pipe_posY[0] = 23;
     // pipe_posY[1] = 39;
@@ -85,12 +92,11 @@ void pipes_init()
 
     // set initial positions: horizontally stacked at the same X (they move together)
     pipes_posX = RESET_X;
-    for(int i = 0; i < NUM_PIPES; i++)
-        set_pipe_sprites_for_pipe(i, pipes_posX, pipe_posY[i]);
+    
 }
 
 
-// update attr1 X for all pipe pieces (called on movement)
+// update attr1 X for all pipe pieces (called on movement) — unchanged
 static void update_all_pipes_attr1_X(int posX)
 {
     for(int i = 0; i < NUM_PIPES; i++)
@@ -102,7 +108,7 @@ static void update_all_pipes_attr1_X(int posX)
     }
 }
 
-// update attr0 Y for a pipe (used after randomizing Y)
+// update attr0 Y for a pipe (used after randomizing Y) — unchanged
 static void update_pipe_attr0_Y(int i)
 {
     int y = pipe_posY[i] & 0xFF;
@@ -112,7 +118,7 @@ static void update_pipe_attr0_Y(int i)
     pipe_br[i]->attr0 = (pipe_br[i]->attr0 & ~0xFF) | ((y + 8) & 0xFF);
 }
 
-// type: 0..2 selects a preset pattern for the 4 pipes
+// type: 0..2 selects a preset pattern for the 4 pipes — unchanged
 void pipe_randomizer(int type)
 {
     pipes_posX = RESET_X;
@@ -137,7 +143,7 @@ void pipe_randomizer(int type)
         default:
             pipe_posY[0] = 23;
             pipe_posY[1] = 39;
-            pipe_posY[2] = 56;
+            pipe_posY[2] = 55;
             pipe_posY[3] = 107;
             break;
     }
