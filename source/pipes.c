@@ -13,6 +13,9 @@ extern OBJ_ATTR obj_buffer[128];
 extern bool byte_updated;
 extern bool pipe_passed;
 extern int game_frame_counter;
+extern unsigned char game_byte;
+extern unsigned char random_byte;
+extern const char* current_gate;
 
 // configuration
 int pipes_posX = 264;
@@ -89,17 +92,13 @@ void pipes_init()
         pipe_bl[i] = &obj_buffer[base + 2];
         pipe_br[i] = &obj_buffer[base + 3];
     }
-    
-    random_pipes();  
     pipes_posX = RESET_X;
     for(int i = 0; i < NUM_PIPES; i++)
         set_pipe_sprites_for_pipe(i, pipes_posX, pipe_posY[i]);
 }
 
-static void calculate_pipe_values()
+void calculate_pipe_values()
 {
-    extern unsigned char game_byte, random_byte;
-    extern const char* current_gate;
     unsigned char correct = game_byte;
     if (strcmp(current_gate, "NOT") == 0) {
         correct = ~game_byte;
@@ -181,7 +180,7 @@ void random_pipes()
 {
     pipe_randomizer(rand() % 3);
     calculate_pipe_values();  // Calculate single correct/decoy for the set
-    draw_pipe_values(pipes_posX - 32);  // Draw the two bytes
+    draw_pipe_values(pipes_posX - 24);  // Draw the two bytes
 }
 
 void pipes_update()
@@ -232,10 +231,10 @@ int pipes_check_collision(int ball_x, int ball_y)
     int x0 = pipes_posX;
     int x1 = pipes_posX + 16;
     if (ball_right > x0 && ball_left < x1) {
-        if (ball_bottom > display_y[0] && ball_top < display_y[0] + 8) {
+        if (ball_bottom > display_y[0] && ball_top < display_y[0] + 36) {
             return is_correct[0] ? 2 : 3;  // Correct or decoy at first Y
         }
-        if (ball_bottom > display_y[1] && ball_top < display_y[1] + 8) {
+        if (ball_bottom > display_y[1] && ball_top < display_y[1] + 36) {
             return is_correct[1] ? 2 : 3;  // Correct or decoy at second Y
         }
     }

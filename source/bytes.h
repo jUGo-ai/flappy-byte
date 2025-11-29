@@ -11,8 +11,7 @@ extern unsigned char random_byte;
 extern const char* current_gate;
 extern const char* gate;
 
-
-
+void calculate_pipe_values();
 void byte_logic(void);
 unsigned char generate_next_byte(void);
 void draw_byte_bits(unsigned char value, int pixel_x, int pixel_y, int base_obj_id);

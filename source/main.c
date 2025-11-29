@@ -73,11 +73,11 @@ int main(void) {
     oam_init(obj_buffer, 128);
     ball_init();
     pipes_init();
-
+    
     bool key_press = false;
     bool game_started = false;
     int game_second_counter = 0;
-    int flickering_byte = 0;
+    // int flickering_byte = 0;
 
     while(1) {
         vid_vsync();
@@ -121,18 +121,40 @@ int main(void) {
                 game_started = true;
                 first_time = false;
                 key_press = true;
+
                 game_byte = generate_next_byte();
-                random_pipes();
+                byte_logic();          // initialize random_byte and current_gate for this round
+                random_pipes();        // now calculate pipe correct/decoy based on current gate/byte
                 draw_byte_bits(game_byte, 30, 12, -1);
-                byte_logic();
                 oam_copy(oam_mem, obj_buffer, 128);
             }
+
+            
             continue;
         }
 
         // Game started — normal update
-        if (key_hit(KEY_A))
+        if (key_hit(KEY_A)){
             key_press = true;
+        }
+
+        // if(game_started && key_hit(KEY_A)){
+        //     game_started = false;
+        //     game_frame_counter = 0;
+        //     game_second_counter = 0;
+        //     flickering_byte = 0;
+        //     byte_updated = false;
+        //     pipe_passed = false;
+        //     game_byte = generate_next_byte();
+            
+        //     clear_byte_bits(30, 12, -1);
+        //     clear_byte_bits(150, 12, -1);
+        //     clear_gate();
+        //     reset_ball();
+        //     reset_pipes();
+        //     oam_copy(oam_mem, obj_buffer, 128);
+        //     continue;
+        // }
 
         if (game_frame_counter >= 60){
             game_frame_counter = 0;
@@ -148,12 +170,6 @@ int main(void) {
         ball_update(key_press);
         pipes_update();
 
-        if (pipes_posX <= 21 && !byte_updated) {
-            apply_byte_logic();
-            byte_updated = true;
-            flickering_byte = 0;
-        }
-
         // Collision with pipes
         int collision_result = pipes_check_collision(BALL_X, ball_Y);
         if (collision_result == 1 || collision_result == 3 || ball_Y <= 23 || ball_Y >= 151)
@@ -161,9 +177,10 @@ int main(void) {
             game_started = false;
             game_frame_counter = 0;
             game_second_counter = 0;
-            flickering_byte = 0;
+            // flickering_byte = 0;
             byte_updated = false;
             pipe_passed = false;
+            game_byte = generate_next_byte();
             
             clear_byte_bits(30, 12, -1);
             clear_byte_bits(150, 12, -1);
@@ -173,14 +190,21 @@ int main(void) {
             oam_copy(oam_mem, obj_buffer, 128);
             continue;
         }
+
+        if (pipes_posX <= 21 && !byte_updated) {
+            apply_byte_logic();
+            byte_logic();
+            byte_updated = true;
+            // flickering_byte = 0;
+        }
         
         pipe_passed = true;
 
-        if (flickering_byte <= 30) {
-            byte_logic();
-        }
+        // if (flickering_byte <= 30) {
+        //     byte_logic();
+        // }
 
-        flickering_byte++;
+        // flickering_byte++;
         oam_copy(oam_mem, obj_buffer, 128);
 
         key_press = false;

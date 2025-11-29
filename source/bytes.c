@@ -163,71 +163,6 @@ void clear_byte_bits(int pixel_x, int pixel_y, int base_obj_id)
     }
 }
 
-// void draw_byte_bits(unsigned char value, int pixel_x, int pixel_y)
-// {
-//     init_font();  // Ensure font is loaded
-//     for(int i=0; i<8; i++)
-//     {
-//         int bit = (value & (1 << (7-i))) ? 1 : 0;
-//         int tile_id = bit ? 6 : 5;  // Tile 5 for '0', 6 for '1'
-
-//         // Use different OBJ slots: left byte (30) uses 17-24, right byte (150) uses 25-32
-//         int base_id = (pixel_x == 30) ? 17 : 25;
-//         int obj_id = base_id + i;
-//         OBJ_ATTR *obj = &obj_buffer[obj_id];
-
-//         obj_set_attr(obj,
-//             ATTR0_SQUARE | ATTR0_4BPP | (pixel_y & 0xFF),          // 8x8, 4BPP, Y position
-//             ATTR1_SIZE_8 | ((pixel_x + i*8) & 0x1FF),             // X position (8 pixels per bit)
-//             ATTR2_BUILD(tile_id, 0, 0)  // Tile 5 or 6, palette 0 (ball's colors)
-//         );
-//     }
-// }
-
-// // ------------------------------------------------------------------
-// // Clear previous byte sprites (hide them)
-// // ------------------------------------------------------------------
-// void clear_byte_bits(int pixel_x, int pixel_y)
-// {
-//     // Use the same base_id logic as draw_byte_bits
-//     int base_id = (pixel_x == 30) ? 17 : 25;
-//     for(int i=0; i<8; i++)
-//     {
-//         int obj_id = base_id + i;
-//         obj_buffer[obj_id].attr0 = ATTR0_HIDE;  // Hide the sprite
-//         clear_gate();
-//         // if (pixel_x == 150) clear_gate();
-//     }
-// }
-
-
-
-// void draw_binary_pipes(unsigned char value, int pixel_x, int pixel_y, int base_obj_id) 
-// {
-//     init_font();
-//     for(int i=0; i<8; i++)
-//     {
-//         int bit = (value & (1 << (7-i))) ? 1 : 0;  // MSB first
-//         int tile_id = bit ? 6 : 5;  // 6 for '1', 5 for '0'
-//         OBJ_ATTR *obj = &obj_buffer[base_obj_id + i];
-//         obj_set_attr(obj,
-//             ATTR0_SQUARE | ATTR0_4BPP | (pixel_y & 0xFF),
-//             ATTR1_SIZE_8 | ((pixel_x + i*8) & 0x1FF),  // 8 pixels per bit
-//             ATTR2_BUILD(tile_id, 0, 0)
-//         );
-//     }
-// }
-// // New helper: Clear binary display (hide 8 sprites)
-// void clear_binary_pipes(int base_obj_id)
-// {
-//     for(int i=0; i<8; i++)
-//         obj_buffer[base_obj_id + i].attr0 = ATTR0_HIDE;
-// }
-
-// ------------------------------------------------------------------
-// Apply logic gate to game_byte with random_byte and draw both
-// ------------------------------------------------------------------
-
 
 void byte_logic(void)
 {
@@ -266,5 +201,5 @@ void apply_byte_logic(void)
         }
     }
     draw_byte_bits(game_byte, 30, 12, -1);
-    byte_logic();
+    // byte_logic();
 }
